@@ -1,6 +1,7 @@
 #include "Program.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #define ERR_MSG(X) printf("In file: %s line: %d\n\t%s\n", __FILE__, __LINE__, X);
 
@@ -24,7 +25,7 @@ static char* readFile(const char* filename)
 	}
 
 	/* count # of chars in the file */
-	while (EOF == fgetc(f)) 
+	while (EOF != fgetc(f))
 	{
 	    numChars++;
 	}
@@ -43,7 +44,7 @@ static char* readFile(const char* filename)
 	while(1)
 	{
 		ch = fgetc(f);
-
+        
 		/* break if end of file is reached, don't forget to finish the string */
 		if (ch == EOF) 
 		{
@@ -52,7 +53,6 @@ static char* readFile(const char* filename)
 		}
 
 		contents[count] = ch;
-
 		count++;
 	}	
 
@@ -82,7 +82,9 @@ int FxsOpenGLProgramAttachShaderWithFile(
 		return 0;
 	}
 
-    succ = FxsOpenGLProgramAttachShaderWithSource(program, type, contents);	
+//    succ = FxsOpenGLProgramAttachShaderWithSource(program, type, contents);
+
+    assert(NULL != contents);
 
 	/* clean up */
 	free(contents);
@@ -160,9 +162,8 @@ int FxsOpenGLProgramLink(GLuint program)
 	    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
 		infoLog = (char*)malloc(infoLogLength + 1);
 		glGetProgramInfoLog(program, infoLogLength, NULL, infoLog);
-		free(infoLog);
 		ERR_MSG(infoLog)
-
+        free(infoLog);
 	    return 0;	
 	}
 	
